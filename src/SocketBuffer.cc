@@ -38,6 +38,7 @@
 #include <algorithm>
 
 #include "SocketCore.h"
+#include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "fmt.h"
@@ -158,7 +159,7 @@ ssize_t SocketBuffer::send()
     }
     ssize_t slen = socket_->writeVector(iov, num);
     if (slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
-      throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
+      throw DL_RETRY_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
     }
     // A2_LOG_NOTICE(fmt("num=%zu, amount=%d, bufq.size()=%zu, SEND=%d",
     //                   num, amount, bufq_.size(), slen));
